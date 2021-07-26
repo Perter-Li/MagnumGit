@@ -39,10 +39,10 @@ int main(int argc,char* argv[])
 		perror("bind");
 		return -1;
 	}
-	printf("I am here\n");
-	while(1){}
+//	printf("I am here\n");
+//	while(1){}
 	listen(sfd,10);
-	printf("I am here 2\n");
+//	printf("I am here 2\n");
 	//使服务器的这个端口和ip处于监听状态，等待客户机的连接请求;10:同时能处理的最大连接请求数
 	int new_fd=-1;
 	struct sockaddr_in cli;
@@ -60,6 +60,7 @@ int main(int argc,char* argv[])
 		ret=select(11,&rdset,NULL,NULL,NULL);//select函数监控rdset描述符集中相关文件的读变化
 		if(ret>0)
 		{
+			printf("new_fd before accept is %d\n",new_fd);
 			if(FD_ISSET(sfd,&rdset))//检查sfd是否发生读变化，即是否侦听到客户端的链接请求
 			{
 				new_fd=accept(sfd,(struct sockaddr*)&cli,&len);
@@ -72,6 +73,7 @@ int main(int argc,char* argv[])
 				FD_SET(new_fd,&tmpset);//将该新的描述符加入监控集
 				printf("Server:已成功连接到客户端%s:%d,您可以向客户端发送信息了!\n",inet_ntoa(cli.sin_addr),ntohs(cli.sin_port));
 			}
+			printf("new_fd after accept is %d\n",new_fd);
 			if(FD_ISSET(new_fd,&rdset))//检查new_fd是否发生读变化，即客户端是否发送信息过来
 			{
 				memset(buf,0,sizeof(buf));
